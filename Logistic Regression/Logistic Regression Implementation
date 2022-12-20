@@ -1,0 +1,146 @@
+import math
+from sklearn import preprocessing as pp
+import numpy as np
+import pandas as pd
+#data = np.genfromtxt("datasets/training_titanic_x_y_train.csv", delimiter=",",dtype=None)
+#data.shape
+data=pd.read_csv("datasets/training_titanic_x_y_train.csv")
+data=data.drop(["Name","Cabin","Ticket"], axis=1)
+
+genders = {"male": 0, "female": 1}
+data1 = [data]
+
+for dataset in data1:
+    dataset['Sex'] = dataset['Sex'].map(genders)
+    
+    
+embarked = {"S": 0, "Q": 1, "C": 2}
+data11 = [data]
+
+for dataset in data11:
+    dataset['Embarked'] = dataset['Embarked'].map(embarked)
+    
+mean = data["Age"].mean()
+std = data["Age"].std() 
+data.Age.fillna(mean,inplace=True)
+data.Embarked.fillna(0,inplace=True)
+
+
+d = data.isnull().sum()
+print(d)
+
+data=data.values
+data.shape
+x1= data[:,:-1]
+y1= data[:,-1]
+print(x1.shape,y1.shape)
+#data1 = np.genfromtxt("datasets/test_titanic_x_test.csv", delimiter=",")
+#data1.shape
+data1=pd.read_csv("datasets/test_titanic_x_test.csv")
+data1=data1.drop(["Name","Cabin","Ticket"], axis=1)
+
+genders = {"male": 0, "female": 1}
+data2 = [data1]
+
+for dataset in data2:
+    dataset['Sex'] = dataset['Sex'].map(genders)
+
+embarked = {"S": 0, "Q": 1, "C": 2}
+data22 = [data1]
+
+for dataset in data22:
+    dataset['Embarked'] = dataset['Embarked'].map(embarked)    
+  
+    
+mean = data1["Age"].mean()
+std = data1["Age"].std() 
+data1.Age.fillna(mean,inplace=True)
+data1.Embarked.fillna(0,inplace=True)
+    
+d = data1.isnull().sum()
+print(d) 
+
+#data1.head(8)   
+data1=data1.values
+data1.shape
+
+x1.shape, data1.shape
+scaler=pp.StandardScaler()
+scaler.fit(x1)
+x1=scaler.transform(x1)
+data1=scaler.transform(data1)
+print(data1)
+import pandas as pd
+df=pd.DataFrame(x1)
+df["c"]= 1
+x2=df.values
+df1=pd.DataFrame(data1)
+df1["c"]= 1
+x3=df1.values
+def step_gradient(points, learning_rate, m):
+    m_slope = np.zeros(8)
+    M = len(points)
+    for i in range(M):
+        x = points[i,:]
+        y = y1[i]
+        for j in range(len(x)):
+            s=[]
+            for k in range(len(x)):
+                s.append(x[k]*m[k])
+            h = 1/ (1+ math.exp(-1*sum(s)))
+            m_slope[j] += (-1/M)* (y - h) * x[j]
+
+    new_m = m - learning_rate*m_slope
+    
+    return new_m
+def gd(points, learning_rate, num_iterations):
+    m = np.zeros(8)
+    #c = 0
+    for i in range(num_iterations):
+        m  = step_gradient(points, learning_rate, m )
+        print(i, " Cost: ", cost(points, m))
+    return m
+def cost(points, m):
+    total_cost = 0
+    M = len(points)
+    for i in range(M):
+        x = points[i,:]
+        y = y1[i]
+        b=[]
+        for j in range(len(m)):
+            b.append (m[j]*x[j])
+        h = 1 / (1+ math.exp(-1*sum(b))) 
+        #if sum(b) < 0:
+            #h= 1 - 1/(1 + math.exp(sum(b)))
+        #else:
+            #h= 1/(1 + math.exp(-sum(b)))
+        total_cost += (-1/M)* (y*(math.log(h))+((1-y)*(math.log(1-h))))
+        #print(total_cost)
+    return total_cost
+                                                          
+def predicted(x3,m):
+    y_p=[]
+    for i in range(len(x3)):
+        b=[]
+        x = x3[i,:]
+        for j in range(len(m)):
+            b.append(m[j]*x[j])
+        h = 1/ (1+ math.exp(-1*sum(b)))   
+        if h>0.5:
+            y_p.append(1)
+        elif h<=0.5:
+            y_p.append(0)    
+    return(y_p)
+def run():
+    learning_rate = 0.1
+    num_iterations = 500
+    m  = gd(x2, learning_rate, num_iterations)
+    slope=m
+    y_predicted=predicted(x3,slope)
+    print(m)
+    print(y_predicted)
+    print(len(y_predicted))
+    np.savetxt("y_titanic.csv",y_predicted,fmt='%.5f')
+
+run()
+
