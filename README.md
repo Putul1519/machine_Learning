@@ -1,2 +1,4 @@
-# machine_Learning
-https://www.google.com/search?sxsrf=APwXEdf-dhtkfFFpYjZEGIa2BPmCo-WQRQ:1679843527286&q=numpy+icon+images&tbm=isch&source=univ&fir=ZT36fhhFxV1DWM%252CRVrrAzS0SkfRqM%252C_%253BEeMEcHXXw_yiuM%252CIHRU_u4CMaWqLM%252C_%253BIPgxBtxKP8vzfM%252CaAtkFlZBBhJdTM%252C_%253BvUcSY5lsfm5JJM%252Cc4qtBLmedLISoM%252C_%253BExltO82Ub4LdNM%252C15dTcP0grZLVVM%252C_%253BmKrYGAHaZbAl2M%252C1kN9uzCLg3YZBM%252C_%253B2nGkgIm39aQD4M%252C0TbtkyOcU85N9M%252C_%253BixdCxG-ufm7ZEM%252CXeDC5XvLHFH5nM%252C_%253BJnjPmJa_5xKZTM%252CbgP38Ti96v9KsM%252C_%253BGP55AjP53gCNBM%252C15dTcP0grZLVVM%252C_&usg=AI4_-kSBLr82v8EiioxfMBS-DirdlOFSpQ&sa=X&ved=2ahUKEwiM_-Ll8Pn9AhW86jgGHTb7BjYQ7Al6BAgQEEo&biw=1536&bih=750&dpr=1.25#imgrc=SvvQioPc17_PEM
+Implementation of basic algorithms of machine learning using numpy and pandas.
+![anaconda](https://user-images.githubusercontent.com/101211103/227785459-f1d792d5-eb05-4ccf-9a3f-af3f514d4dba.jpg)
+![python](https://user-images.githubusercontent.com/101211103/227785480-7fd9b772-a01e-49e6-8347-8c1ff55fbf5b.png)
+
