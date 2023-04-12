@@ -1,0 +1,127 @@
+1.Handling Missing Values:
+->Take a first look at the data
+->see how many missing data points we have
+->Figure out why the data is missing
+->Filling in missing values
+import pandas as pd
+import numpy as np
+nf=pd.read_csv("NFL Play by Play 2009-2016.csv")
+sf=pd.read_csv('Building_Permits.csv')
+nf.sample(5)
+sf.sample(5)
+missing_values_count=nf.isnull().sum()
+missing_values_count[0:15]
+#how many total missing values do we have
+total_cells=np.product(nf.shape)
+total_missing=missing_values_count.sum()
+
+(total_missing/total_cells)*100#percentage of missing values
+missing_values_count.shape
+# #how many total missing values do we have
+# missing_values_count=sf.isnull().sum()
+# total_cells=np.product(sf.shape)
+# total_missing=missing_values_count.sum()
+# (total_missing/total_cells)*100#percentage of missing values
+missing_values_count[0:10]
+#Is this value missing becuase it wasn't recorded or becuase it dosen't exist?
+#drop missing values
+nf.dropna()
+columns_with_na=nf.dropna(axis=1)
+columns_with_na.head()
+
+#removing all the columns that have at least one missing value instead.
+print("columns in original dataset:",nf.shape[1])
+print("columns wih na's dropped:",columns_with_na.shape[1])
+#We've lost quite a bit of data, but at this point we have successfully removed all the NaN's from our data.
+Filling in missing values automatically
+subset_nf=nf.loc[:,'EPA':'Season'].head()
+subset_nf
+subset_nf.fillna(0)
+# replace all NA's the value that comes directly after it in the same column, 
+# then replace all the reamining na's with 0
+subset_nf.fillna(method = 'bfill', axis=0).fillna(0)
+from sklearn.impute import SimpleImputer
+my_imputer=SimpleImputer()
+data=my_imputer.fit_transform(subset_nf)
+data
+Scaling and Normalization
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+original_data=np.random.exponential(size=1000)
+scaled_data=MinMaxScaler(original_data)
+#scaled_data=scaler.fit(original_data)
+fig,ax=plt.subplots(1,2)
+sns.distplot(original_data,ax=ax[0])
+ax[0].set_title("original data")
+sns.distplot(original_data,ax=ax[1])
+ax[1].set_title("scaled data")
+from scipy import stats
+normalized_data = stats.boxcox(original_data)
+
+# plot both together to compare
+fig, ax=plt.subplots(1,2)
+sns.distplot(original_data, ax=ax[0])
+ax[0].set_title("Original Data")
+sns.distplot(normalized_data[0], ax=ax[1])
+ax[1].set_title("Normalized data")
+
+Parsing Dates
+
+land=pd.read_csv("database1.csv")
+land.head(21)
+land['Date'].head()
+land['parsed_date']=pd.to_datetime(land['Date'],infer_datetime_format=True)
+land['parsed_date'].head()
+# day=land['parsed_date'].dt.day()
+character encodings
+import chardet 
+before="This is the euro symbol: €"
+type(before)
+after=before.encode("utf-8",errors="replace")
+type(after)
+after
+print(after.decode("utf-8"))
+kick=pd.read_csv('ks-projects.csv')
+with open("ks-projects.csv",'rb') as rawdata:
+    result=chardet.detect(rawdata.read(10000))
+print(result)
+#kick=pd.read_csv('ks-projects.csv',encoding='Windows-1252')
+kick.head()
+kick.to_csv("ks-project.csv")
+Inconsistent Data Entry
+import fuzzywuzzy
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+with open("PakistansuicideAttacks.csv","rb") as rawdata:
+    result=chardet.detect(rawdata.read(100000))
+print(result)
+data=pd.read_csv("PakistansuicideAttacks.csv",encoding="Windows-1252")
+data.head()
+cities=data['City'].unique()
+cities.sort()
+print(len(cities))
+cities
+#Lahore' and 'Lahore ', for example, or 'Lakki Marwat' and 'Lakki marwat'.
+make everything lower case (I can change it back at the end if I like) and remove any white spaces at the beginning and end of cells.
+data['City']=data['City'].str.lower()
+data['City']=data['City'].str.strip()
+cities=data['City'].unique()
+cities.sort()
+print(len(cities))
+cities
+#d. i khan, d.i khan
+matches=fuzzywuzzy.process.extract("d.i khan",cities,limit=10,scorer=fuzzywuzzy.fuzz.token_sort_ratio)
+matches
+def replace_matches_in_column(df,column,string_to,min_ratio=90):
+    strings=df[column].unique()
+    matches=fuzzywuzzy.process.extract(string_to,strings,limit=10,scorer=fuzzywuzzy.fuzz.token_sort_ratio)
+    close_matches=[matches[0] for matches in matches if matches[1]>=min_ratio]
+    rows_with_matches=df[column].isin(close_matches)
+    df.loc[rows_with_matches,column]=string_to
+    print("All done")
+replace_matches_in_column(df=data,column='City',string_to="d.i khan")
+cities=data['City'].unique()
+cities.sort()
+print(len(cities))
+cities
